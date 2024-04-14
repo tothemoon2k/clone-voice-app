@@ -8,10 +8,10 @@
   import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label";
 
-  let name = "JT";
-  let number = "4355659477";
-  let firstMessage = "Howdy!!!! How are ya?";
-  let description = "A 16yr black boy";
+  let name = "";
+  let number = "";
+  let firstMessage = "";
+  let description = "";
   let overallCall = "";
   let callTone = "";
   let voiceRecording = null;
@@ -96,38 +96,33 @@
   };
 </script>
 
-<h1 class="text-3xl font-semibold text-center mt-20 mb-10">Call your lad</h1>
+<h1 class="text-4xl font-semibold text-center mt-20 mb-20">Call your lad</h1>
 
-<label for=""></label>
-<input type="text" />
-
-<label for=""></label>
-<input type="text" />
-
-<Card.Root class="w-[600px]">
+<Card.Root class="w-[600px] mx-auto mb-20">
   <Card.Header>
     <Card.Title>Have a bit of fun with your lad</Card.Title>
-    <Card.Description>Enter a but of info on your lad below</Card.Description>
+    <Card.Description>Enter a bit of info on your lad below</Card.Description>
   </Card.Header>
   <Card.Content>
     <form>
       <div class="grid w-full items-center gap-4">
         <div class="flex flex-col space-y-1.5">
           <Label for="name">Lad's Name</Label>
-          <Input bind:value={name} id="name" placeholder="Name of your project" />
+          <Input bind:value={name} id="name" placeholder="Ayan" />
         </div>
         <div class="flex flex-col space-y-1.5">
           <Label for="number">Lad's Number</Label>
-          <Input bind:value={number} id="number" placeholder="444-555-3333" />
+          <Input bind:value={number} id="number" placeholder="4445553333" />
         </div>
         <div class="flex flex-col space-y-1.5">
           <Label for="description">Brief description of lad</Label>
-          <Input bind:value={description} id="description" placeholder="444-555-3333" />
+          <Input bind:value={description} id="description" placeholder="A young indian male" />
         </div>
         <div class="flex flex-col space-y-1.5">
           <Label for="firstMessage">Opening message</Label>
-          <Input bind:value={firstMessage} id="firstMessage" placeholder="444-555-3333" />
+          <Input bind:value={firstMessage} id="firstMessage" placeholder="Hi! Am I speaking to the real Ayan?" />
         </div>
+        <!--
         <div class="flex flex-col space-y-1.5">
           <Label for="overall">Overall call</Label>
           <Input bind:value={overallCall} id="overall" placeholder="444-555-3333" />
@@ -142,6 +137,8 @@
             </Select.Content>
           </Select.Root>
         </div>
+        -->
+        <Label for="firstMessage">Lad's Voice Recording - Around 90 secs</Label>
         <div class="flex items-center justify-center w-full">
           <label
             for="dropzone-file"
