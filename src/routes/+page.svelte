@@ -8,10 +8,10 @@
   import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label";
 
-  let name = null;
-  let number = null;
-  let firstMessage = "";
-  let description = "";
+  let name = "JT";
+  let number = "4355659477";
+  let firstMessage = "Howdy!!!! How are ya?";
+  let description = "A 16yr black boy";
   let overallCall = "";
   let callTone = "";
   let voiceRecording = null;
@@ -34,6 +34,7 @@
       },
     })
       .then((response) => {
+        console.log(response)
         voiceId = response.data.voice_id;
         const test = {
           transcriber: {
@@ -69,7 +70,7 @@
             {
               phoneNumberId: "1fbca4d5-fcf5-426d-8ffd-f771216ab7c2",
               assistant: test,
-              customer: { number: "+14355659477", name: "Justin" },
+              customer: { number: `+1${number}`, name: `${name}` },
             },
             {
               headers: {
@@ -185,6 +186,8 @@
   </Card.Footer>
 </Card.Root>
 
+
+<!-- Original Design
 <form class="max-w-sm mx-auto">
   <div class="mb-5">
     <label for="email" class="block mb-2 text-sm font-medium text-gray-900"
@@ -315,3 +318,4 @@
 >
   Submit
 </button>
+-->
