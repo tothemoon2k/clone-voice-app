@@ -1,0 +1,34 @@
+@font-face {
+    font-family: 'Linik Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/linik-sans/LinikSans-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Linik Sans';
+    font-style: normal;
+    font-weight: 500;
+    src: url('/fonts/linik-sans/LinikSans-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Linik Sans';
+    font-style: normal;
+    font-weight: 600;
+    src: url('/fonts/linik-sans/LinikSans-SemiBold.ttf');
+}
+
+@font-face {
+    font-family: 'Linik Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: url('/fonts/linik-sans/LinikSans-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Linik Sans';
+    font-style: normal;
+    font-weight: 800;
+    src: url('/fonts/linik-sans/LinikSans-Black.ttf');
+}
