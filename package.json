@@ -29,6 +29,7 @@
 		"clsx": "^2.1.0",
 		"firebase": "^10.11.0",
 		"lucide-svelte": "^0.368.0",
+		"stripe": "^15.2.0",
 		"tailwind-merge": "^2.2.2",
 		"tailwind-variants": "^0.2.1",
 		"uuid": "^9.0.1"
