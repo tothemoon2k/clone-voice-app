@@ -8,7 +8,7 @@
     import Step4 from "$lib/components/app/Step4.svelte";
     import Step5 from "$lib/components/app/Step5.svelte";
     import Step6 from "$lib/components/app/Step6.svelte";
-  import { payWithStripe } from "$lib/utils/payWithStripe";
+    import { payWithStripe } from "$lib/utils/payWithStripe";
     import { saveInfoToDb } from "$lib/utils/saveInfoToDb";
 
     let step = 1;
@@ -59,7 +59,7 @@
 
     const handleCall = async () => {
         docId = await saveInfoToDb(forMe, name, phoneNumber, shortDescription, voiceRecording, firstMessage);
-        await payWithStripe();
+        await payWithStripe(docId);
         //Pay with stripe
     }
 </script>

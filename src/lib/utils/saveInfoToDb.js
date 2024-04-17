@@ -20,7 +20,7 @@ const saveInfoToDb = async(forMe, name, phoneNumber, shortDescription, voiceReco
         shortDescription: shortDescription,
         voiceRecording: audioRef,
         firstMessage: firstMessage,
-        paid: false,
+        used: false,
     });
 
     const refId = docRef.id;

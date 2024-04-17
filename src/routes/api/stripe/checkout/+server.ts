@@ -6,13 +6,14 @@ const stripe = new Stripe(import.meta.env.VITE_STRIPE_SECRETKEY, {
 })
 
 export const POST: RequestHandler = async ({request}) =>{
+    const data = await request.json();
     const items = [{price: "price_1P6dp3Aag5Hy82KvH6RZkTtD", quantity: 1}]
 
     const session = await stripe.checkout.sessions.create({
         line_items: items,
         mode: 'payment',
-        success_url: "https://www.google.com", // always send back to /call/id route
-        cancel_url: "https://www.google.com" // always send back to /call/id route
+        success_url: `http://localhost:5173/call/${data.id}?success=true`, // always send back to /call/id route
+        cancel_url: `http://localhost:5173/call/${data.id}?cancelled=true` // always send back to /call/id route
     })
 
     return new Response(
