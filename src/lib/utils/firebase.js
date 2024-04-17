@@ -1,4 +1,6 @@
-import { initializeApp } from "firebase/app";
+import { deleteApp, initializeApp } from "firebase/app";
+import { getApps } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
 
 const firebaseConfig = {
@@ -10,5 +12,13 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FB_APPID
 };
 
+let firebaseApp;
+if(!getApps().length) {
+    firebaseApp = initializeApp(firebaseConfig);
+} else {
+    firebaseApp = initializeApp(firebaseConfig);
+    deleteApp(firebaseApp);
+    firebaseApp = initializeApp(firebaseConfig);
+}
 
-const app = initializeApp(firebaseConfig);
+export const db = getFirestore(firebaseApp);

@@ -8,8 +8,9 @@
     import Step4 from "$lib/components/app/Step4.svelte";
     import Step5 from "$lib/components/app/Step5.svelte";
     import Step6 from "$lib/components/app/Step6.svelte";
+    import { saveInfoToDb } from "$lib/utils/saveInfoToDb";
 
-    let step = 5;
+    let step = 1;
     let forMe = null;
     let name = null;
     let phoneNumber = null;
@@ -19,6 +20,7 @@
 
     let step5Loading = false;
     let step6Loading = false;
+    let docId = null;
 
     const handleNext = () => {
         if(step === 1 && !forMe) {
@@ -55,9 +57,8 @@
     }
 
     const handleCall = () => {
-        //reformat phone number for api
-        console.log(name, phoneNumber, shortDescription, firstMessage)
-        console.log("Time to make that call")
+        docId = saveInfoToDb(forMe, name, phoneNumber, shortDescription, voiceRecording, firstMessage);
+        //Pay with stripe
     }
 </script>
 
