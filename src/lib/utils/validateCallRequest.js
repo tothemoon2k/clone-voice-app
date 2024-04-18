@@ -4,7 +4,7 @@ import { doc, getDoc, collection } from "firebase/firestore";
 import { db } from "$lib/utils/firebase.js";
 
 const validateCallRequest = async (slug) => {
-    let isPaid = null;
+    let isPaid = false;
     let shouldRing = null;
 
     const urlParams = new URLSearchParams(window.location.search);
