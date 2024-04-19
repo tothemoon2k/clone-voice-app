@@ -48,7 +48,7 @@
       Please confirm your country code and enter your phone number.
     </p>
 
-    <select bind:value={countryCode} class="max-w-lg mt-10 py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+    <select bind:value={countryCode} class="max-w-lg mt-10 py-3 px-4 pe-9 block w-full border border-gray-200 rounded-[8px] text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
       <option value="+1" selected>🇺🇸 United States</option>
       <option value="+93">🇦🇫 Afghanistan</option>
       <option value="+355">🇦🇱 Albania</option>
@@ -152,10 +152,10 @@
 
     {#if !phoneError}
         <div class="relative w-full max-w-lg">
-            <div class="flex items-center pl-5 mt-6">
+            <div class="flex items-center pl-5 mt-6 border rounded-[8px]">
                 <p class="ml-0.5 text-sm">{countryCode}</p>
                 <div class="ml-5 inline-block h-full min-h-[2.7em] w-0.5 self-stretch bg-gray-200"></div>
-                <input bind:value={phoneNumber} type="text" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="000 000 000"/>
+                <input bind:value={phoneNumber} type="text" class="py-3 px-4 block w-full border-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="000 000 000"/>
             </div>
         </div>
     {:else}
@@ -191,3 +191,11 @@
 
   <button on:click={handleConfirm} class="justify-self-end bg-blue-500 w-5/6 max-w-lg py-2.5 font-medium text-white rounded-xl">Continue</button>
 </div>
+
+
+<style>
+    select {
+        
+        -webkit-box-shadow: none;
+    }
+</style>

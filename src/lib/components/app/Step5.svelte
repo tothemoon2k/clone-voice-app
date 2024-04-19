@@ -24,7 +24,7 @@
         <img class="h-16" src={img} alt="Person">
         <h1 class="text-2xl font-medium mt-8">Voice recording</h1>
 
-        <p class="text-center text-sm mt-4 mx-4">Please confirm your country code and enter your phone number. </p>
+        <p class="text-center text-sm mt-4 mx-4">Please upload a voice recording, the speaker should speak casually and clearly. <br> Voice recording must be at least 1 minute long.</p>
 
         <div class="mt-12 flex items-center justify-center w-full max-w-lg">
             <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-[10px] cursor-pointer bg-gray-50 hover:bg-gray-100">
