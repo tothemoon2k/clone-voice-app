@@ -9,6 +9,7 @@
 
 <svelte:head>
   <title>Clone Caller</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
   <style>
     *{
       font-family: 'Linik Sans';
