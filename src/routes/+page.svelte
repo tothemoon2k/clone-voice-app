@@ -1,318 +1,116 @@
 <script>
-// @ts-nocheck
-  import axios from "axios";
-  import { v4 as uuidv4 } from "uuid";
-  import { Button } from "$lib/components/ui/button";
-  import * as Card from "$lib/components/ui/card";
-  import * as Select from "$lib/components/ui/select";
-  import { Input } from "$lib/components/ui/input";
-  import { Label } from "$lib/components/ui/label";
+    // @ts-nocheck
 
-  let name = "";
-  let number = "";
-  let firstMessage = "";
-  let description = "";
-  let overallCall = "";
-  let callTone = "";
-  let voiceRecording = null;
-  const uuid = uuidv4();
-  let voiceId = "";
+    import Landing from "$lib/components/app/Landing.svelte";
+    import Step1 from "$lib/components/app/Step1.svelte";
+    import Step2 from "$lib/components/app/Step2.svelte";
+    import Step3 from "$lib/components/app/Step3.svelte";
+    import Step4 from "$lib/components/app/Step4.svelte";
+    import Step5 from "$lib/components/app/Step5.svelte";
+    import Step6 from "$lib/components/app/Step6.svelte";
+    import { payWithStripe } from "$lib/utils/payWithStripe";
+    import { saveInfoToDb } from "$lib/utils/saveInfoToDb";
 
-  const handleCall = () => {
-    const form = new FormData();
-    form.append("name", uuid);
-    form.append("files", voiceRecording);
-    form.append("description", description);
+    let step = 0;
+    let forMe = null;
+    let name = null;
+    let countryCode = "+1";
+    let phoneNumber = null;
+    let shortDescription = null;
+    let voiceRecording = null;
+    let firstMessage = "Hi, how are you doing today?";
 
-    axios({
-      method: "post",
-      url: "https://api.elevenlabs.io/v1/voices/add",
-      data: form,
-      headers: {
-        "xi-api-key": import.meta.env.VITE_ELEVEN_KEY,
-        "Content-Type": "multipart/form-data",
-      },
-    })
-      .then((response) => {
-        console.log(response)
-        voiceId = response.data.voice_id;
-        const test = {
-          transcriber: {
-            provider: "deepgram",
-            model: "nova-2",
-            language: "en",
-          },
-          model: {
-            provider: "openai",
-            model: "gpt-4-1106-preview",
-            fallbackModels: ["gpt-4-0125-preview", "gpt-4-0613"],
-            semanticCachingEnabled: true,
-            temperature: 1,
-            maxTokens: 525,
-          },
-          voice: {
-            provider: "11labs",
-            voiceId: voiceId,
-          },
-          silenceTimeoutSeconds: 30,
-          responseDelaySeconds: 0.4,
-          llmRequestDelaySeconds: 0.1,
-          numWordsToInterruptAssistant: 2,
-          maxDurationSeconds: 1800,
-          firstMessage: firstMessage,
-        };
+    let step5Loading = false;
+    let step6Loading = false;
+    let docId = null;
 
-        console.log("About to make call");
+    const handleNext = () => {
+        if(step === 1 && !forMe) {
+            alert("Please select an option");
+            return;
+        }
 
-        axios
-          .post(
-            "https://api.vapi.ai/call/phone",
-            {
-              phoneNumberId: "1fbca4d5-fcf5-426d-8ffd-f771216ab7c2",
-              assistant: test,
-              customer: { number: `+1${number}`, name: `${name}` },
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${import.meta.env.VITE_VAPI_KEY}`,
-                "Content-Type": "application/json",
-              },
-            },
-          )
-          .then((response) => {
-            console.log(response.data);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+        if(step === 2 && !name) {
+            alert("Please enter a name");
+            return;
+        }
 
-  const handleFileInput = (event) => {
-    voiceRecording = event.target.files[0];
-  };
+        if(step === 3 && !phoneNumber) {
+            alert("Please enter a phone number");
+            return;
+        }
+
+        if(step === 5 && !voiceRecording) {
+            alert("Please enter a voice recording");
+            return;
+        }
+
+        step++;
+    }
+
+    const handleCall = async () => {
+        step6Loading = true;
+        const match = phoneNumber.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/);
+        const formattedNumber = `${countryCode}${match[1] || ''}${match[2]}${match[3]}`;
+        
+        docId = await saveInfoToDb(forMe, name, formattedNumber, shortDescription, voiceRecording, firstMessage);
+        await payWithStripe(docId);
+        step6Loading = false;
+    }
 </script>
 
-<h1 class="text-4xl font-semibold text-center mt-20 mb-20">Call your lad</h1>
+<h3 class="text-2xl font-medium mt-4 ml-7 hidden">Clone Caller</h3>
 
-<Card.Root class="w-[600px] mx-auto mb-20">
-  <Card.Header>
-    <Card.Title>Have a bit of fun with your lad</Card.Title>
-    <Card.Description>Enter a bit of info on your lad below</Card.Description>
-  </Card.Header>
-  <Card.Content>
-    <form>
-      <div class="grid w-full items-center gap-4">
-        <div class="flex flex-col space-y-1.5">
-          <Label for="name">Lad's Name</Label>
-          <Input bind:value={name} id="name" placeholder="Ayan" />
-        </div>
-        <div class="flex flex-col space-y-1.5">
-          <Label for="number">Lad's Number</Label>
-          <Input bind:value={number} id="number" placeholder="4445553333" />
-        </div>
-        <div class="flex flex-col space-y-1.5">
-          <Label for="description">Brief description of lad</Label>
-          <Input bind:value={description} id="description" placeholder="A young indian male" />
-        </div>
-        <div class="flex flex-col space-y-1.5">
-          <Label for="firstMessage">Opening message</Label>
-          <Input bind:value={firstMessage} id="firstMessage" placeholder="Hi! Am I speaking to the real Ayan?" />
-        </div>
-        <!--
-        <div class="flex flex-col space-y-1.5">
-          <Label for="overall">Overall call</Label>
-          <Input bind:value={overallCall} id="overall" placeholder="444-555-3333" />
-        </div>
-        <div class="flex flex-col space-y-1.5">
-          <Label for="framework">Call Tone</Label>
-          <Select.Root>
-            <Select.Trigger id="framework">
-              <Select.Value placeholder="Select" />
-            </Select.Trigger>
-            <Select.Content>
-            </Select.Content>
-          </Select.Root>
-        </div>
-        -->
-        <Label for="firstMessage">Lad's Voice Recording - Around 90 secs</Label>
-        <div class="flex items-center justify-center w-full">
-          <label
-            for="dropzone-file"
-            class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
-          >
-            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-              <svg
-                class="w-8 h-8 mb-4 text-gray-500"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 16"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                />
-              </svg>
-              <p class="mb-2 text-sm text-gray-500">
-                <span class="font-semibold">Click to upload</span> or drag and drop
-              </p>
-              <p class="text-xs text-gray-500">
-                SVG, PNG, JPG or GIF (MAX. 800x400px)
-              </p>
-            </div>
-            <input
-              on:change={handleFileInput}
-              id="dropzone-file"
-              type="file"
-              class="hidden"
-            />
-          </label>
-        </div>
-      </div>
-    </form>
-  </Card.Content>
-  <Card.Footer class="flex justify-between">
-    <Button on:click={handleCall}>Call</Button>
-  </Card.Footer>
-</Card.Root>
-
-
-<!-- Original Design
-<form class="max-w-sm mx-auto">
-  <div class="mb-5">
-    <label for="email" class="block mb-2 text-sm font-medium text-gray-900"
-      >What's your lads name?</label
-    >
-    <input
-      type="email"
-      id="email"
-      bind:value={name}
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-      placeholder="Ayan"
-      required
-    />
-  </div>
-
-  <div class="mb-5">
-    <label for="email" class="block mb-2 text-sm font-medium text-gray-900"
-      >What's your lads number?</label
-    >
-    <input
-      type="email"
-      id="email"
-      bind:value={number}
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-      placeholder="Ayan"
-      required
-    />
-  </div>
-
-  <div class="mb-5">
-    <label for="email" class="block mb-2 text-sm font-medium text-gray-900"
-      >Please briefly describe your lad</label
-    >
-    <input
-      type="email"
-      id="email"
-      bind:value={description}
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-      placeholder="A young indian boy"
-      required
-    />
-  </div>
-
-  <div class="mb-5">
-    <label for="email" class="block mb-2 text-sm font-medium text-gray-900"
-      >First message</label
-    >
-    <input
-      type="email"
-      id="email"
-      bind:value={firstMessage}
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-      placeholder="name@flowbite.com"
-      required
-    />
-  </div>
-
-  <div class="mb-5">
-    <label for="email" class="block mb-2 text-sm font-medium text-gray-900"
-      >Overall Call</label
-    >
-    <input
-      type="email"
-      id="email"
-      bind:value={overallCall}
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-      placeholder="name@flowbite.com"
-      required
-    />
-  </div>
-
-  <label for="countries" class="block mb-2 text-sm font-medium text-gray-900"
-    >Call Tone</label
-  >
-  <select
-    id="countries"
-    class="mb-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-  >
-    <option selected>Choose a tone</option>
-    <option value="US">Angry</option>
-    <option value="CA">Happy</option>
-    <option value="FR">Sad</option>
-    <option value="DE">Normal</option>
-  </select>
-
-  <div class="flex items-center justify-center w-full">
-    <label
-      for="dropzone-file"
-      class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
-    >
-      <div class="flex flex-col items-center justify-center pt-5 pb-6">
-        <svg
-          class="w-8 h-8 mb-4 text-gray-500"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 20 16"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-          />
-        </svg>
-        <p class="mb-2 text-sm text-gray-500">
-          <span class="font-semibold">Click to upload</span> or drag and drop
-        </p>
-        <p class="text-xs text-gray-500">
-          SVG, PNG, JPG or GIF (MAX. 800x400px)
-        </p>
-      </div>
-      <input
-        on:change={handleFileInput}
-        id="dropzone-file"
-        type="file"
-        class="hidden"
-      />
-    </label>
-  </div>
-</form>
-
-<button
-  type="button"
-  on:click={handleSubmit}
-  class="mt-5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
->
-  Submit
-</button>
--->
+{#if step === 0}
+    <Landing>
+        <button on:click={handleNext} class="justify-self-end bg-blue-500 w-5/6 md:w-3/5 lg:w-2/5 py-2.5 font-medium text-white rounded-xl">Get Started</button>
+    </Landing>
+{:else if step === 1}
+    <Step1 bind:forMe={forMe}>
+        <button on:click={handleNext} class="justify-self-end bg-blue-500 w-5/6 max-w-lg py-2.5 font-medium text-white rounded-xl">Continue</button>
+    </Step1>
+{:else if step === 2}
+    <Step2 bind:name={name}>
+        <button on:click={handleNext} class="justify-self-end bg-blue-500 w-5/6 max-w-lg py-2.5 font-medium text-white rounded-xl">Continue</button>
+    </Step2>
+{:else if step === 3}
+    <Step3 bind:countryCode={countryCode} bind:phoneNumber={phoneNumber}>
+        <button on:click={handleNext} class="justify-self-end bg-blue-500 w-5/6 max-w-lg py-2.5 font-medium text-white rounded-xl">Continue</button>
+    </Step3>
+{:else if step === 4}
+    <Step4 bind:shortDescription={shortDescription}>
+        <button on:click={handleNext} class="justify-self-end bg-blue-500 w-5/6 max-w-lg py-2.5 font-medium text-white rounded-xl">Continue</button>
+    </Step4>
+{:else if step === 5}
+    <Step5 bind:voiceRecording={voiceRecording} bind:loading={step5Loading}>
+        <button on:click={handleNext} disabled={step5Loading} class="disabled:cursor-not-allowed justify-self-end bg-blue-500 w-5/6 max-w-lg py-2.5 font-medium text-white rounded-xl">
+            {#if !step5Loading}
+                Continue
+            {:else}
+                <div role="status">
+                    <svg aria-hidden="true" class="inline w-5 h-5 text-gray-200 animate-spin fill-blue-500" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                    </svg>
+                    <span class="sr-only">Loading...</span>
+                </div>
+            {/if}
+        </button>
+    </Step5>
+{:else if step === 6}
+    <Step6 bind:firstMessage={firstMessage}>
+        <button on:click={handleCall} class="justify-self-end bg-blue-500 w-5/6 max-w-lg py-2.5 font-medium text-white rounded-xl">
+            {#if !step6Loading}
+                Call
+            {:else}
+                <div role="status">
+                    <svg aria-hidden="true" class="inline w-5 h-5 text-gray-200 animate-spin fill-blue-500" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                    </svg>
+                    <span class="sr-only">Loading...</span>
+                </div>
+            {/if}
+        </button>
+    </Step6>
+{/if}

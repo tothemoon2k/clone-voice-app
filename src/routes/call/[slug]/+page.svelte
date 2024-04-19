@@ -93,7 +93,7 @@
             <p class="text-center text-sm mt-4 mx-4">Please confirm your country code and enter your phone number. </p>
         </div>
 
-        <button disabled={retryLoading} on:click={handleRetry} class="justify-self-end bg-blue-500 w-5/6 py-2.5 font-medium text-white rounded-xl">
+        <button disabled={retryLoading} on:click={handleRetry} class="justify-self-end bg-blue-500 w-5/6 max-w-lg py-2.5 font-medium text-white rounded-xl">
             {#if !retryLoading}
                 Update Payment Method
             {:else}
@@ -122,7 +122,7 @@
 
             <p class="text-center text-sm mt-4 mx-4">Please confirm your country code. Listen to the call recording below.</p>
 
-            <audio class="mt-12 w-full" controls>
+            <audio class="mt-12 w-full max-w-lg" controls>
                 <source src={callRecording} type="audio/mp3">
                 Your browser does not support the audio element.
             </audio>

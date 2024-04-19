@@ -39,7 +39,7 @@
     }
 </script>
 
-<div class="w-screen h-screen pb-10 flex flex-col items-center justify-between">
+<div class="w-screen h-screen pb-10 flex flex-col items-center justify-between md:justify-center md:gap-20">
   <div class="w-5/6 flex flex-col items-center pt-20">
     <img class="h-20" src={img} alt="Person" />
     <h1 class="text-2xl font-medium mt-8">Phone Number</h1>
@@ -48,7 +48,7 @@
       Please confirm your country code and enter your phone number.
     </p>
 
-    <select bind:value={countryCode} class="mt-10 py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+    <select bind:value={countryCode} class="max-w-lg mt-10 py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
       <option value="+1" selected>🇺🇸 United States</option>
       <option value="+93">🇦🇫 Afghanistan</option>
       <option value="+355">🇦🇱 Albania</option>
@@ -151,7 +151,7 @@
     </select>
 
     {#if !phoneError}
-        <div class="relative w-full">
+        <div class="relative w-full max-w-lg">
             <div class="flex items-center pl-5 mt-6">
                 <p class="ml-0.5 text-sm">{countryCode}</p>
                 <div class="ml-5 inline-block h-full min-h-[2.7em] w-0.5 self-stretch bg-gray-200"></div>
@@ -159,7 +159,7 @@
             </div>
         </div>
     {:else}
-        <div class="relative w-full">
+        <div class="relative w-full max-w-lg">
             <div class="flex items-center pl-5 mt-6 w-full">
                 <p class="ml-0.5 text-sm">{countryCode}</p>
                 <input bind:value={phoneNumber} type="text" id="hs-validation-name-error" name="hs-validation-name-error" class="ml-3 py-3 px-4 block w-full rounded-[7px] border-2 border-red-500 text-sm focus:border-red-500 focus:ring-red-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400" required="" aria-describedby="hs-validation-name-error-helper">
@@ -177,8 +177,8 @@
 </div>
 
   {#if confirming}
-    <div class="bg-black bg-opacity-55 w-screen h-screen absolute flex justify-center items-center" >
-        <div class="bg-white w-5/6 h-64 rounded-xl flex flex-col items-center pt-10">
+    <div class="bg-black bg-opacity-55 w-screen h-screen absolute flex justify-center items-center">
+        <div class="bg-white w-5/6 max-w-lg h-64 rounded-xl flex flex-col items-center pt-10">
             <h2 class="text-3xl font-semibold">{countryCode} {phoneNumber}</h2>
             <p class="text-sm mt-3">Is this the correct number?</p>
             <button on:click={handleCloseConfirm} class="mt-3.5 mb-6 text-blue-500">Edit</button>
@@ -189,5 +189,5 @@
     </div>
   {/if}
 
-  <button on:click={handleConfirm} class="justify-self-end bg-blue-500 w-5/6 py-2.5 font-medium text-white rounded-xl">Continue</button>
+  <button on:click={handleConfirm} class="justify-self-end bg-blue-500 w-5/6 max-w-lg py-2.5 font-medium text-white rounded-xl">Continue</button>
 </div>
