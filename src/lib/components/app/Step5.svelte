@@ -40,7 +40,7 @@
         </div>
     
         {#if voiceRecording}
-            <div class="mt-6 flex flex-col gap-4 w-full max-w-lg" transition:fly>
+            <div class="mt-6 flex flex-col gap-4 w-full max-w-lg mb-6" transition:fly>
                 <div class="w-full bg-white py-2 px-4 rounded-[8px] border-[1.7px] border-gray-300 flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <img class="w-8 p-1.5 bg-blue-100 rounded-[3px]" src="https://img.icons8.com/ios-filled/500/2563EB/high-volume--v1.png" alt="">
