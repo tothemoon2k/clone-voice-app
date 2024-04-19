@@ -11,9 +11,10 @@
     import { payWithStripe } from "$lib/utils/payWithStripe";
     import { saveInfoToDb } from "$lib/utils/saveInfoToDb";
 
-    let step = 1;
+    let step = 0;
     let forMe = null;
     let name = null;
+    let countryCode = "+1";
     let phoneNumber = null;
     let shortDescription = null;
     let voiceRecording = null;
@@ -45,9 +46,6 @@
         }
 
         if(step === 5){
-            //Set loading to true
-            //Make request to stripe api
-            //Set loading to false
             step6Loading = true;
             setTimeout(()=>{
                 step6Loading = false;
@@ -58,7 +56,10 @@
     }
 
     const handleCall = async () => {
-        docId = await saveInfoToDb(forMe, name, phoneNumber, shortDescription, voiceRecording, firstMessage);
+        const match = phoneNumber.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/);
+        const formattedNumber = `${countryCode}${match[1] || ''}${match[2]}${match[3]}`;
+
+        docId = await saveInfoToDb(forMe, name, formattedNumber, shortDescription, voiceRecording, firstMessage);
         await payWithStripe(docId);
         //Pay with stripe
     }
@@ -78,7 +79,7 @@
         <button on:click={handleNext} class="justify-self-end bg-blue-500 w-5/6 py-2.5 font-medium text-white rounded-xl">Continue</button>
     </Step2>
 {:else if step === 3}
-    <Step3 bind:phoneNumber={phoneNumber}>
+    <Step3 bind:countryCode={countryCode} bind:phoneNumber={phoneNumber}>
         <button on:click={handleNext} class="justify-self-end bg-blue-500 w-5/6 py-2.5 font-medium text-white rounded-xl">Continue</button>
     </Step3>
 {:else if step === 4}

@@ -5,24 +5,19 @@ import { db } from "$lib/utils/firebase.js";
 
 const validateCallRequest = async (slug) => {
     let isPaid = false;
-    let shouldRing = null;
+    let alreadyUsed = false;
 
     const urlParams = new URLSearchParams(window.location.search);
     isPaid = urlParams.has("success") && urlParams.get("success") === "true";
 
-    const docRef = doc(db, "callInfo", slug);
-    const docSnap = await getDoc(docRef);
+    const docSnap = await getDoc(doc(db, "callInfo", slug));
     let docData = null;
 
     if (docSnap.exists()) {
         docData = docSnap.data();
-        if(docData.used === false){
-            shouldRing = true
-        } else {
-            shouldRing = false;
-        }
+        alreadyUsed = docData.used;
     } 
-    return({isPaid, shouldRing})
+    return({isPaid, alreadyUsed, docData})
 }  
 
 export {validateCallRequest};

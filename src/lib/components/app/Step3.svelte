@@ -3,7 +3,7 @@
     import img from "$lib/assets/8.png";
     
     let confirming = false;
-    let countryCode = "+1";
+    export let countryCode = "+1";
     export let phoneNumber = null;
     let phoneError = false;
 
